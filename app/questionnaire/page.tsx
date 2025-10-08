@@ -170,10 +170,10 @@ export default function QuestionnairePage() {
       <div className="bg-white border-b border-neutral-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-lg font-semibold text-neutral-800">
+            <span className="text-base font-semibold text-neutral-800">
               Step {currentStep} of {totalSteps}
             </span>
-            <span className="text-base font-medium text-neutral-600">
+            <span className="text-sm font-medium text-neutral-600">
               {Math.round((currentStep / totalSteps) * 100)}% Complete
             </span>
           </div>
