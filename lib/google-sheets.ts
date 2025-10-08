@@ -11,6 +11,14 @@ export async function appendToSheet(data: Record<string, string>) {
       credentialsJson = Buffer.from(credentialsJson, 'base64').toString('utf-8');
     }
 
+    // Remove any actual control characters (newlines, tabs, carriage returns)
+    // that shouldn't be in the JSON structure itself
+    // But preserve escaped versions like \\n which should be in the private key
+    credentialsJson = credentialsJson
+      .split('\n')
+      .map(line => line.trim())
+      .join('');
+
     const credentials = JSON.parse(credentialsJson);
 
     // Create auth client
