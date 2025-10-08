@@ -167,19 +167,19 @@ export default function QuestionnairePage() {
       </div>
 
       {/* Progress Indicator */}
-      <div className="bg-white border-b border-neutral-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-neutral-600">
+      <div className="bg-white border-b border-neutral-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-4xl mx-auto px-6 py-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-lg font-semibold text-neutral-800">
               Step {currentStep} of {totalSteps}
             </span>
-            <span className="text-sm text-neutral-500">
+            <span className="text-base font-medium text-neutral-600">
               {Math.round((currentStep / totalSteps) * 100)}% Complete
             </span>
           </div>
-          <div className="w-full bg-neutral-200 rounded-full h-2">
+          <div className="w-full bg-neutral-200 rounded-full h-2.5">
             <div
-              className="bg-neutral-900 h-2 rounded-full transition-all duration-300"
+              className="bg-neutral-900 h-2.5 rounded-full transition-all duration-300"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             />
           </div>
