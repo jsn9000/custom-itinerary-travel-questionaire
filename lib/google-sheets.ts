@@ -3,9 +3,15 @@ import { google } from 'googleapis';
 export async function appendToSheet(data: Record<string, string>) {
   try {
     // Parse the service account credentials from environment variable
-    const credentials = JSON.parse(
-      process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}'
-    );
+    // Support both direct JSON and base64-encoded JSON
+    let credentialsJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}';
+
+    // If it looks like base64 (no { at start), decode it
+    if (!credentialsJson.trim().startsWith('{')) {
+      credentialsJson = Buffer.from(credentialsJson, 'base64').toString('utf-8');
+    }
+
+    const credentials = JSON.parse(credentialsJson);
 
     // Create auth client
     const auth = new google.auth.GoogleAuth({
