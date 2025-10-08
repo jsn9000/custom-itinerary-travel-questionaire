@@ -21,8 +21,18 @@ export async function appendToSheet(data: Record<string, string>) {
     }
 
     // Prepare the row data in the order matching the sheet columns
+    // Format timestamp as human readable: "Jan 15, 2025 10:30 AM"
+    const timestamp = new Date().toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+
     const row = [
-      new Date().toISOString(), // Timestamp
+      timestamp, // Timestamp
       data.name,
       data.email,
       data.numberOfTravelers,
