@@ -397,9 +397,9 @@ export default function QuestionnairePage() {
                   <Input
                     type="text"
                     value={formData.departureAirport}
-                    onChange={(e) => handleChange("departureAirport", e.target.value)}
+                    onChange={(e) => handleChange("departureAirport", e.target.value.toUpperCase())}
                     placeholder="e.g., JFK, LAX, ORD"
-                    className="w-full"
+                    className="w-full uppercase"
                   />
                 </div>
 
@@ -530,7 +530,11 @@ export default function QuestionnairePage() {
                   <Input
                     type="text"
                     value={formData.totalBudget}
-                    onChange={(e) => handleChange("totalBudget", e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '');
+                      const formatted = value ? `$${parseInt(value).toLocaleString()}` : '';
+                      handleChange("totalBudget", formatted);
+                    }}
                     placeholder="e.g., $3,000"
                     className="w-full"
                   />
