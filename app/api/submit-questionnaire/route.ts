@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { appendToSheet } from '@/lib/google-sheets';
+// import { appendToSheet } from '@/lib/google-sheets';
 import { generateQuestionnaireText } from '@/lib/pdf-generator';
 import { sendQuestionnaireEmail } from '@/lib/email-sender';
 
@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Append data to Google Sheet using service account
-    await appendToSheet(data);
+    // TEMPORARILY DISABLED - Google Sheets integration
+    // await appendToSheet(data);
 
     // Generate text file
     console.log('Generating text file for submission...');
