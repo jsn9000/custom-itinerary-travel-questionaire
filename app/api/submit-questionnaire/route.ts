@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { appendToSheet } from '@/lib/google-sheets';
-import { generateQuestionnairePDF } from '@/lib/pdf-generator';
+import { generateQuestionnaireText } from '@/lib/pdf-generator';
 import { sendQuestionnaireEmail } from '@/lib/email-sender';
 
 export async function POST(request: NextRequest) {
@@ -18,18 +18,18 @@ export async function POST(request: NextRequest) {
     // Append data to Google Sheet using service account
     await appendToSheet(data);
 
-    // Generate PDF
-    console.log('Generating PDF for submission...');
-    const pdfBuffer = await generateQuestionnairePDF(data);
-    console.log('PDF generated successfully');
+    // Generate text file
+    console.log('Generating text file for submission...');
+    const textBuffer = await generateQuestionnaireText(data);
+    console.log('Text file generated successfully');
 
-    // Send email with PDF attachment
+    // Send email with text file attachment
     console.log('Sending email to jsn9000@gmail.com...');
     await sendQuestionnaireEmail(
       'jsn9000@gmail.com',
       data.name,
       data.email,
-      pdfBuffer
+      textBuffer
     );
     console.log('Email sent successfully');
 

@@ -38,7 +38,7 @@ export async function sendQuestionnaireEmail(
   recipientEmail: string,
   travelerName: string,
   travelerEmail: string,
-  pdfBuffer: Buffer
+  textBuffer: Buffer
 ): Promise<void> {
   const subject = `New Travel Questionnaire Submission - ${travelerName}`;
 
@@ -49,7 +49,7 @@ Traveler Name: ${travelerName}
 Traveler Email: ${travelerEmail}
 Submitted: ${new Date().toLocaleString('en-US')}
 
-Please see the attached PDF for complete details.
+Please see the attached text file for complete details.
   `;
 
   const html = `
@@ -63,7 +63,7 @@ Please see the attached PDF for complete details.
         <p style="margin: 5px 0;"><strong>Submitted:</strong> ${new Date().toLocaleString('en-US')}</p>
       </div>
 
-      <p>Please see the attached PDF for complete details.</p>
+      <p>Please see the attached text file for complete details.</p>
 
       <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
       <p style="color: #999; font-size: 12px;">This email was automatically generated from Mame Dee Travel World.</p>
@@ -77,9 +77,9 @@ Please see the attached PDF for complete details.
     html,
     attachments: [
       {
-        filename: `questionnaire_${travelerName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
-        content: pdfBuffer,
-        contentType: 'application/pdf',
+        filename: `questionnaire_${travelerName.replace(/\s+/g, '_')}_${Date.now()}.txt`,
+        content: textBuffer,
+        contentType: 'text/plain',
       },
     ],
   });
