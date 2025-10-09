@@ -21,9 +21,15 @@ export async function appendToSheet(data: Record<string, string>) {
 
     const credentials = JSON.parse(credentialsJson);
 
-    // Create auth client
-    const auth = new google.auth.GoogleAuth({
-      credentials,
+    // Ensure private key has proper newlines
+    if (credentials.private_key && !credentials.private_key.includes('\n')) {
+      credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+    }
+
+    // Create JWT client directly
+    const auth = new google.auth.JWT({
+      email: credentials.client_email,
+      key: credentials.private_key,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
