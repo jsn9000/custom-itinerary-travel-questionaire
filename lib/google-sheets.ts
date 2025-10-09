@@ -3,7 +3,6 @@ import { google } from 'googleapis';
 export async function appendToSheet(data: Record<string, string>) {
   try {
     // Parse the service account credentials from environment variable
-    // Support both direct JSON and base64-encoded JSON
     let credentialsJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}';
 
     // If it looks like base64 (no { at start), decode it
@@ -11,20 +10,7 @@ export async function appendToSheet(data: Record<string, string>) {
       credentialsJson = Buffer.from(credentialsJson, 'base64').toString('utf-8');
     }
 
-    // Remove any actual control characters (newlines, tabs, carriage returns)
-    // that shouldn't be in the JSON structure itself
-    // But preserve escaped versions like \\n which should be in the private key
-    credentialsJson = credentialsJson
-      .split('\n')
-      .map(line => line.trim())
-      .join('');
-
     const credentials = JSON.parse(credentialsJson);
-
-    // Ensure private key has proper newlines
-    if (credentials.private_key && !credentials.private_key.includes('\n')) {
-      credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
-    }
 
     // Create JWT client directly
     const auth = new google.auth.JWT({
