@@ -51,6 +51,7 @@ export default function QuestionnairePage() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,31 +74,7 @@ export default function QuestionnairePage() {
           type: "success",
           message: "Thank you! Your questionnaire has been submitted successfully.",
         });
-        // Reset form
-        setFormData({
-          name: "",
-          email: "",
-          numberOfTravelers: "",
-          children: "",
-          specialOccasion: "",
-          destination: "",
-          continent: "",
-          needAccommodation: "",
-          hotelPriceRange: "",
-          needCarRental: "",
-          needFlightHelp: "",
-          departureAirport: "",
-          willingOtherAirport: "",
-          flightDate: "",
-          flexibleFlightDate: "",
-          flightPreference: "",
-          needActivitiesHelp: "",
-          needFoodHelp: "",
-          totalBudget: "",
-          daysOnLand: "",
-          travelDateFlexibility: "",
-        });
-        setCurrentStep(1);
+        setIsSubmitted(true);
       } else {
         setSubmitStatus({
           type: "error",
@@ -150,6 +127,34 @@ export default function QuestionnairePage() {
         return true;
     }
   };
+
+  // Show success message if submitted
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-neutral-50">
+        {/* Header */}
+        <div className="bg-neutral-50 border-b border-neutral-200">
+          <div className="max-w-4xl mx-auto px-6 py-8">
+            <div className="flex items-center justify-start">
+              <img
+                src="/mame-dee-header.png"
+                alt="Mame Dee Travel World - Travel Concierge"
+                className="h-32 w-auto"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Success Message */}
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <div className="bg-green-50 text-green-800 border border-green-200 p-8 rounded-lg text-center">
+            <h2 className="text-2xl font-bold mb-2">Thank you!</h2>
+            <p className="text-lg">Your questionnaire has been submitted successfully.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-50">
