@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
     const textBuffer = await generateQuestionnaireText(data);
     console.log('Text file generated successfully');
 
-    // Send email with text file attachment
-    console.log('Sending email to jsn9000@gmail.com...');
+    // Send email with text file attachment to both recipients
+    console.log('Sending emails to jsn9000@gmail.com and Dejabryant28@gmail.com...');
     await sendQuestionnaireEmail(
-      'jsn9000@gmail.com',
+      'jsn9000@gmail.com,Dejabryant28@gmail.com',
       data.name,
       data.email,
       textBuffer
     );
-    console.log('Email sent successfully');
+    console.log('Emails sent successfully');
 
     return NextResponse.json(
       { success: true, message: 'Questionnaire submitted successfully' },
