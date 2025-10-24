@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type ToolUIPart } from "ai";
 import { useState, useEffect, useRef, memo } from "react";
+import { TypewriterMessage } from "./typewriter-message";
 import {
   Conversation,
   ConversationContent,
@@ -84,6 +85,14 @@ type RAGToolUIPart = ToolUIPart<{
 
 interface ChatAssistantProps {
   api?: string;
+  initialMessages?: Array<{
+    role: "user" | "assistant";
+    content: string;
+  }>;
+  placeholder?: string;
+  useTypewriter?: boolean;
+  typewriterSentences?: string[];
+  onProgressUpdate?: (progress: number) => void;
 }
 
 // Memoized components for better performance
@@ -134,6 +143,38 @@ const MemoizedMessage = memo(({
   // Only handle text parts (reasoning is now handled as separate flow items)
   const textParts = message.parts?.filter((p: any) => p.type === 'text') || [];
 
+  // Combine text from parts or use message.content
+  const messageText = textParts.length > 0
+    ? textParts.map((part: any) => part.text).join('')
+    : (message.content || "");
+
+  // Deduplicate text if it's repeated
+  const deduplicatedText = (() => {
+    if (!messageText || messageText.length === 0) {
+      return messageText;
+    }
+
+    // Method 1: Check for exact 50/50 duplication first (most common case)
+    if (messageText.length % 2 === 0) {
+      const half = messageText.length / 2;
+      const firstHalf = messageText.slice(0, half);
+      const secondHalf = messageText.slice(half);
+      if (firstHalf === secondHalf) {
+        return firstHalf;
+      }
+    }
+
+    // Method 2: Use regex to find any repeating pattern from start to end
+    // This catches cases like "ABCABC" or "ABCABCABC"
+    const pattern = /^(.+?)\1+$/;
+    const match = messageText.match(pattern);
+    if (match) {
+      return match[1]; // Return just the first occurrence of the repeated pattern
+    }
+
+    return messageText;
+  })();
+
   return (
     <>
       {/* Render text message if there's content */}
@@ -141,7 +182,7 @@ const MemoizedMessage = memo(({
         <Message from={message.role}>
           <MessageContent>
             <Response>
-              {textParts.map((part: any, i: number) => part.text).join('') || message.content || ""}
+              {deduplicatedText}
             </Response>
           </MessageContent>
           {children}
@@ -153,11 +194,43 @@ const MemoizedMessage = memo(({
 
 MemoizedMessage.displayName = 'MemoizedMessage';
 
-export default function ChatAssistant({ api }: ChatAssistantProps) {
+export default function ChatAssistant({
+  api,
+  initialMessages,
+  placeholder = "What would you like to know?",
+  useTypewriter = false,
+  typewriterSentences = [],
+  onProgressUpdate
+}: ChatAssistantProps) {
   const [input, setInput] = useState("");
-  const { messages: rawMessages, status, sendMessage } = useChat({
+  const [typewriterComplete, setTypewriterComplete] = useState(!useTypewriter);
+  const { messages: rawMessages, status, sendMessage, setMessages } = useChat({
     transport: api ? new DefaultChatTransport({ api }) : undefined,
   });
+
+  // Track progress by counting user messages (answers)
+  useEffect(() => {
+    if (onProgressUpdate) {
+      const userMessageCount = rawMessages.filter(msg => msg.role === 'user').length;
+      onProgressUpdate(userMessageCount);
+    }
+  }, [rawMessages, onProgressUpdate]);
+
+  // Initialize messages on mount if provided (but only after typewriter is done)
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    if (typewriterComplete && initialMessages && initialMessages.length > 0 && !hasInitialized.current && rawMessages.length === 0) {
+      hasInitialized.current = true;
+      // Convert initialMessages to the proper format with id and parts
+      const formattedMessages = initialMessages.map((msg, index) => ({
+        id: `initial-${index}`,
+        role: msg.role,
+        content: msg.content,
+        parts: [{ type: 'text' as const, text: msg.content }]
+      }));
+      setMessages(formattedMessages as any);
+    }
+  }, [initialMessages, rawMessages.length, setMessages, typewriterComplete]);
 
   // Debounced messages for performance - update every 30ms instead of every token
   const [debouncedMessages, setDebouncedMessages] = useState(rawMessages);
@@ -234,7 +307,13 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
     <div className="flex flex-col h-full max-h-full overflow-hidden">
       <Conversation className="flex-1 h-0 overflow-hidden">
         <ConversationContent className="space-y-4">
-          {messages.length === 0 ? (
+          {useTypewriter && !typewriterComplete ? (
+            <TypewriterMessage
+              sentences={typewriterSentences}
+              finalMessage={initialMessages?.[0]?.content || ""}
+              onComplete={() => setTypewriterComplete(true)}
+            />
+          ) : messages.length === 0 ? (
             <ConversationEmptyState
               title="Start a conversation"
               description="Ask me anything and I'll help you out!"
@@ -415,7 +494,7 @@ export default function ChatAssistant({ api }: ChatAssistantProps) {
       <div className="p-4 flex-shrink-0">
         <PromptInput onSubmit={handleSubmit}>
           <PromptInputBody>
-            <PromptInputTextarea placeholder="What would you like to know?" />
+            <PromptInputTextarea placeholder={placeholder} />
             <PromptInputToolbar>
               <div />
               <PromptInputSubmit status={isLoading ? "submitted" : undefined} />
