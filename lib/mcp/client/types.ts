@@ -124,4 +124,7 @@ export interface FirecrawlGenerateLlmsTxtResult {
 export interface MCPClientConfig {
   apiKey: string;
   serverUrl?: string;
+  projectRef?: string; // For Supabase
+  orgId?: string; // For Vectorize
+  pipelineId?: string; // For Vectorize
 }

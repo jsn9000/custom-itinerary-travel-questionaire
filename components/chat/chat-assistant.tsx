@@ -144,9 +144,17 @@ const MemoizedMessage = memo(({
   const textParts = message.parts?.filter((p: any) => p.type === 'text') || [];
 
   // Combine text from parts or use message.content
-  const messageText = textParts.length > 0
-    ? textParts.map((part: any) => part.text).join('')
-    : (message.content || "");
+  // Check if we have both parts and content to avoid duplication
+  const messageText = (() => {
+    if (textParts.length > 0) {
+      // Use parts and ignore content to avoid duplication
+      return textParts.map((part: any) => part.text).join('');
+    } else if (message.content) {
+      // Fallback to content if no parts
+      return message.content;
+    }
+    return "";
+  })();
 
   // Deduplicate text if it's repeated
   const deduplicatedText = (() => {
@@ -170,6 +178,24 @@ const MemoizedMessage = memo(({
     const match = messageText.match(pattern);
     if (match) {
       return match[1]; // Return just the first occurrence of the repeated pattern
+    }
+
+    // Method 3: Check for sentence-level duplication (for cases like "Great! Question?Great! Question?")
+    // Split by common sentence boundaries and check if sentences are repeating
+    const sentences = messageText.split(/(?<=[.!?])\s*(?=[A-Z])/);
+    if (sentences.length > 1) {
+      // Check if all sentences are the same
+      const firstSentence = sentences[0];
+      const allSame = sentences.every(s => s === firstSentence);
+      if (allSame) {
+        return firstSentence;
+      }
+
+      // Check if sentences repeat in a pattern
+      const uniqueSentences = new Set(sentences);
+      if (uniqueSentences.size === 1) {
+        return firstSentence;
+      }
     }
 
     return messageText;
@@ -204,8 +230,28 @@ export default function ChatAssistant({
 }: ChatAssistantProps) {
   const [input, setInput] = useState("");
   const [typewriterComplete, setTypewriterComplete] = useState(!useTypewriter);
+
+  // Generate or retrieve session ID
+  const [sessionId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const existing = sessionStorage.getItem('chat-session-id');
+      if (existing) return existing;
+
+      const newId = `session-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      sessionStorage.setItem('chat-session-id', newId);
+      return newId;
+    }
+    return `session-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+  });
+
   const { messages: rawMessages, status, sendMessage, setMessages } = useChat({
-    transport: api ? new DefaultChatTransport({ api }) : undefined,
+    transport: api ? new DefaultChatTransport({
+      api,
+      body: {
+        sessionId,
+        // userId can be added here if you have user authentication
+      }
+    }) : undefined,
   });
 
   // Track progress by counting user messages (answers)
@@ -336,7 +382,17 @@ export default function ChatAssistant({
                 partIndex?: number;
               }> = [];
 
+              // Track seen message IDs to prevent duplicates
+              const seenMessageIds = new Set<string>();
+
               messages.forEach((message) => {
+                // Skip if we've already processed this exact message
+                if (seenMessageIds.has(message.id)) {
+                  console.warn(`⚠️ Duplicate message detected and skipped: ${message.id}`);
+                  return;
+                }
+                seenMessageIds.add(message.id);
+
                 // Process all parts in chronological order
                 const parts = (message as any).parts || [];
 

@@ -41,7 +41,7 @@ export default function ChatQuestionnairePage() {
       <div className="flex-1 overflow-hidden flex items-center justify-center">
         <div className="w-full max-w-2xl h-full">
           <ChatAssistant
-            api="/api/chat-questionnaire"
+            api="/api/chat-with-mcp"
             initialMessages={initialMessages}
             placeholder="Type your answer here..."
             useTypewriter={true}

@@ -1,3 +1,4 @@
 export { retrieveKnowledgeBase } from './retrieve-knowledge-base';
 export { retrieveKnowledgeBaseSimple } from './retrieve-knowledge-base-simple';
 export { submitQuestionnaire } from './submit-questionnaire';
+export { retrieveMemory, saveMemory, saveConversationMessage } from './memory';
