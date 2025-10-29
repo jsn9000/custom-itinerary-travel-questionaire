@@ -186,7 +186,7 @@ const MemoizedMessage = memo(({
     if (sentences.length > 1) {
       // Check if all sentences are the same
       const firstSentence = sentences[0];
-      const allSame = sentences.every(s => s === firstSentence);
+      const allSame = sentences.every((s: string) => s === firstSentence);
       if (allSame) {
         return firstSentence;
       }

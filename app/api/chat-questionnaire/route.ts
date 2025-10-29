@@ -50,7 +50,6 @@ export async function POST(request: NextRequest) {
       },
       stopWhen: stepCountIs(15),
       temperature: 0.7, // More focused responses
-      maxTokens: 150, // Limit response length to prevent multiple questions
     });
 
     return result.toUIMessageStreamResponse();

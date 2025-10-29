@@ -173,8 +173,8 @@ When they respond, follow the format: [Acknowledgment] [ONE next question only]
 🚨 **CRITICAL**: You can ONLY show the completion message AFTER:
 1. You have asked ALL 21 questions (questions 1-21 from the list above)
 2. You have received valid answers for ALL required fields
-3. You have successfully called the `submitQuestionnaire` tool
-4. The tool returns `success: true`
+3. You have successfully called the submitQuestionnaire tool
+4. The tool returns success: true
 
 **DO NOT show the completion message prematurely!** Even if the user has answered many questions, continue asking until you reach question 21 and have all required information.
 
