@@ -14,15 +14,20 @@ export async function POST(request: NextRequest) {
   try {
     const { messages, sessionId, userId } = await request.json();
 
+    console.log(`[Questionnaire API] Request received - SessionId: ${sessionId}, Messages count: ${messages?.length}`);
+
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      console.error("[Questionnaire API] Invalid messages array");
       return new Response("Messages array is required", { status: 400 });
     }
 
     if (!sessionId) {
+      console.error("[Questionnaire API] Missing session ID");
       return new Response("Session ID is required", { status: 400 });
     }
 
     const modelMessages = convertToModelMessages(messages);
+    console.log(`[Questionnaire API] Converted ${modelMessages.length} messages for model`);
 
     // Build context from memory and previous conversations
     // This ONLY loads data for the current sessionId - enforces session isolation
@@ -34,6 +39,8 @@ export async function POST(request: NextRequest) {
     if (memoryContext) {
       enhancedPrompt += `\n\n${memoryContext}\n\nUse this context to provide personalized responses and remember information from previous interactions.`;
     }
+
+    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.5`);
 
     const result = streamText({
       model: openai("gpt-4o"),
@@ -49,12 +56,14 @@ export async function POST(request: NextRequest) {
         // Backend admins can access all data via Supabase dashboard/MCP
       },
       stopWhen: stepCountIs(15),
-      temperature: 0.3, // Faster, more focused responses
+      temperature: 0.5, // Balanced: fast but still responsive
+      maxTokens: 150, // Limit response length for faster replies
     });
 
+    console.log(`[Questionnaire API] StreamText initialized, returning response`);
     return result.toUIMessageStreamResponse();
   } catch (error) {
-    console.error("Chat Questionnaire API error:", error);
+    console.error("[Questionnaire API] Error:", error);
     return new Response("Failed to generate response", { status: 500 });
   }
 }
