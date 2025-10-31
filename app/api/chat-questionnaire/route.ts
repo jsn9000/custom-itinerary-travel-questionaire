@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     //   enhancedPrompt += `\n\n${memoryContext}\n\nUse this context to provide personalized responses and remember information from previous interactions.`;
     // }
 
-    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.7`);
+    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.8`);
 
     const result = streamText({
       model: openai("gpt-4o"),
@@ -49,13 +49,8 @@ export async function POST(request: NextRequest) {
       messages: modelMessages,
       tools: {
         submitQuestionnaire,
-        // Removed other tools to prevent interference with questionnaire flow
-        // saveMemory,
-        // saveConversationMessage,
-        // retrieveKnowledgeBase,
       },
-      stopWhen: stepCountIs(5), // Limit tool execution steps
-      temperature: 0.7, // Higher temperature for better response generation
+      temperature: 0.8, // Higher temperature for better conversational flow
     });
 
     console.log(`[Questionnaire API] StreamText initialized, returning response`);
