@@ -7,6 +7,13 @@
     "build": "next build --turbopack",
     "start": "next start"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "@vectorize-io/vectorize-client",
+      "sharp"
+    ]
+  },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.37",
     "@ai-sdk/openai": "^2.0.30",
