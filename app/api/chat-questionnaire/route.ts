@@ -29,18 +29,19 @@ export async function POST(request: NextRequest) {
     const modelMessages = convertToModelMessages(messages);
     console.log(`[Questionnaire API] Converted ${modelMessages.length} messages for model`);
 
+    // Temporarily disable memory service to improve response speed
     // Build context from memory and previous conversations
     // This ONLY loads data for the current sessionId - enforces session isolation
-    const memoryService = new MemoryService();
-    const memoryContext = await memoryService.buildContextForSession(sessionId, userId);
+    // const memoryService = new MemoryService();
+    // const memoryContext = await memoryService.buildContextForSession(sessionId, userId);
 
-    // Enhance system prompt with memory context
-    let enhancedPrompt = questionnairePrompt;
-    if (memoryContext) {
-      enhancedPrompt += `\n\n${memoryContext}\n\nUse this context to provide personalized responses and remember information from previous interactions.`;
-    }
+    // Use base prompt without memory context for faster responses
+    const enhancedPrompt = questionnairePrompt;
+    // if (memoryContext) {
+    //   enhancedPrompt += `\n\n${memoryContext}\n\nUse this context to provide personalized responses and remember information from previous interactions.`;
+    // }
 
-    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.5`);
+    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.7`);
 
     const result = streamText({
       model: openai("gpt-4o"),
@@ -48,15 +49,13 @@ export async function POST(request: NextRequest) {
       messages: modelMessages,
       tools: {
         submitQuestionnaire,
-        saveMemory,
-        saveConversationMessage,
-        retrieveKnowledgeBase,
-        // NOTE: retrieveMemory tool removed for security
-        // Users can only access their own session data (auto-loaded above)
-        // Backend admins can access all data via Supabase dashboard/MCP
+        // Removed other tools to prevent interference with questionnaire flow
+        // saveMemory,
+        // saveConversationMessage,
+        // retrieveKnowledgeBase,
       },
-      stopWhen: stepCountIs(15),
-      temperature: 0.5, // Balanced: fast but still responsive
+      stopWhen: stepCountIs(5), // Limit tool execution steps
+      temperature: 0.7, // Higher temperature for better response generation
     });
 
     console.log(`[Questionnaire API] StreamText initialized, returning response`);
