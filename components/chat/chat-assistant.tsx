@@ -156,44 +156,53 @@ const MemoizedMessage = memo(({
     return "";
   })();
 
-  // Deduplicate text if it's repeated
+  // Deduplicate text if it's repeated - CRITICAL: Prevent all forms of duplication
   const deduplicatedText = (() => {
     if (!messageText || messageText.length === 0) {
       return messageText;
     }
 
-    // Method 1: Check for exact 50/50 duplication first (most common case)
-    if (messageText.length % 2 === 0) {
-      const half = messageText.length / 2;
-      const firstHalf = messageText.slice(0, half);
-      const secondHalf = messageText.slice(half);
-      if (firstHalf === secondHalf) {
-        return firstHalf;
+    // 🚨 CRITICAL: Try multiple deduplication strategies to catch ALL cases
+
+    // Method 1: Check for exact repeating patterns (handles 2x, 3x, 4x, etc. duplication)
+    // This catches "ABCABC", "ABCABCABC", "ABCABCABCABC", etc.
+    for (let divisor = 2; divisor <= 10; divisor++) {
+      if (messageText.length % divisor === 0) {
+        const chunkSize = messageText.length / divisor;
+        const firstChunk = messageText.slice(0, chunkSize);
+        let isRepeated = true;
+
+        for (let i = 1; i < divisor; i++) {
+          const currentChunk = messageText.slice(i * chunkSize, (i + 1) * chunkSize);
+          if (currentChunk !== firstChunk) {
+            isRepeated = false;
+            break;
+          }
+        }
+
+        if (isRepeated) {
+          console.log(`🔍 Detected ${divisor}x duplication, deduplicating...`);
+          return firstChunk;
+        }
       }
     }
 
     // Method 2: Use regex to find any repeating pattern from start to end
-    // This catches cases like "ABCABC" or "ABCABCABC"
+    // This is a backup in case the above doesn't catch it
     const pattern = /^(.+?)\1+$/;
     const match = messageText.match(pattern);
     if (match) {
-      return match[1]; // Return just the first occurrence of the repeated pattern
+      console.log(`🔍 Regex detected duplication, deduplicating...`);
+      return match[1];
     }
 
-    // Method 3: Check for sentence-level duplication (for cases like "Great! Question?Great! Question?")
-    // Split by common sentence boundaries and check if sentences are repeating
+    // Method 3: Check for sentence-level duplication
     const sentences = messageText.split(/(?<=[.!?])\s*(?=[A-Z])/);
     if (sentences.length > 1) {
-      // Check if all sentences are the same
       const firstSentence = sentences[0];
       const allSame = sentences.every((s: string) => s === firstSentence);
       if (allSame) {
-        return firstSentence;
-      }
-
-      // Check if sentences repeat in a pattern
-      const uniqueSentences = new Set(sentences);
-      if (uniqueSentences.size === 1) {
+        console.log(`🔍 Sentence-level duplication detected, deduplicating...`);
         return firstSentence;
       }
     }
@@ -398,6 +407,11 @@ export default function ChatAssistant({
 
                 parts.forEach((part: any, partIndex: number) => {
                   if (part.type?.startsWith('tool-')) {
+                    // Skip submitQuestionnaire tool - don't display it to users
+                    if (part.type === 'tool-submitQuestionnaire') {
+                      return;
+                    }
+
                     // Handle tool calls
                     const uniqueId = part.toolCallId ||
                                     part.id ||

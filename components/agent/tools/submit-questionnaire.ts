@@ -15,7 +15,6 @@ export const submitQuestionnaire = tool({
 
     // Destination
     destination: z.string().optional().describe('Specific destination they have in mind'),
-    continent: z.string().optional().describe('Continent preference if no specific destination'),
 
     // Lodging & Car Rental (required)
     needAccommodation: z.string().describe('Whether they need accommodation (yes/no)'),
@@ -55,8 +54,8 @@ export const submitQuestionnaire = tool({
       } else if (process.env.VERCEL_URL) {
         baseUrl = `https://${process.env.VERCEL_URL}`;
       } else {
-        // In development, try to detect the port from environment or use 3001
-        const port = process.env.PORT || '3001';
+        // In development, use port 3003 (the actual dev server port)
+        const port = process.env.PORT || '3003';
         baseUrl = `http://localhost:${port}`;
       }
 

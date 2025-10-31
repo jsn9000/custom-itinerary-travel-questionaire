@@ -22,11 +22,18 @@ export default function ChatQuestionnairePage() {
       <div className="bg-neutral-50 border-b border-neutral-200 flex-shrink-0">
         <div className="max-w-2xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <img
-              src="/mame-dee-header.png"
-              alt="Mame Dee Travel World - Travel Concierge"
-              className="h-24 w-auto"
-            />
+            <a
+              href="https://mamedeeworld.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer"
+            >
+              <img
+                src="/mame-dee-header.png"
+                alt="Mame Dee Travel World - Travel Concierge"
+                className="h-24 w-auto hover:opacity-80 transition-opacity"
+              />
+            </a>
             <a
               href="/"
               className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors"

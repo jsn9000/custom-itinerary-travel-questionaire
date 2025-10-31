@@ -30,11 +30,18 @@ export default function Home() {
       <div className="bg-neutral-50 border-b border-neutral-200 flex-shrink-0">
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex items-center justify-center">
-            <img
-              src="/mame-dee-header.png"
-              alt="Mame Dee Travel World - Travel Concierge"
-              className="h-40 w-auto"
-            />
+            <a
+              href="https://mamedeeworld.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer"
+            >
+              <img
+                src="/mame-dee-header.png"
+                alt="Mame Dee Travel World - Travel Concierge"
+                className="h-40 w-auto hover:opacity-80 transition-opacity"
+              />
+            </a>
           </div>
         </div>
       </div>

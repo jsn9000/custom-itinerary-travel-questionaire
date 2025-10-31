@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
 
     const modelMessages = convertToModelMessages(messages);
     console.log(`[Questionnaire API] Converted ${modelMessages.length} messages for model`);
+    console.log(`[Questionnaire API] Last user message:`, modelMessages[modelMessages.length - 1]);
 
     // Temporarily disable memory service to improve response speed
     // Build context from memory and previous conversations
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest) {
     // }
 
     console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.8`);
+    console.log(`[Questionnaire API] Tools available:`, Object.keys({ submitQuestionnaire }));
 
     const result = streamText({
       model: openai("gpt-4o"),

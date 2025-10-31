@@ -21,7 +21,7 @@ export function TypewriterMessage({ sentences, finalMessage, onComplete }: Typew
   useEffect(() => {
     // If we've gone through all sentences, show the final message
     if (currentSentenceIndex >= sentences.length) {
-      // Wait 2 seconds before showing the final message
+      // Wait 3 seconds before showing the final message
       setTimeout(() => {
         setShowFinal(true);
         // Add final message with proper spacing
@@ -31,7 +31,7 @@ export function TypewriterMessage({ sentences, finalMessage, onComplete }: Typew
         if (onComplete) {
           onComplete();
         }
-      }, 2000);
+      }, 3000);
       return;
     }
 
