@@ -57,7 +57,6 @@ export async function POST(request: NextRequest) {
       },
       stopWhen: stepCountIs(15),
       temperature: 0.5, // Balanced: fast but still responsive
-      maxTokens: 150, // Limit response length for faster replies
     });
 
     console.log(`[Questionnaire API] StreamText initialized, returning response`);
