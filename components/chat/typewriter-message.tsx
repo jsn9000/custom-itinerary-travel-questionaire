@@ -21,14 +21,17 @@ export function TypewriterMessage({ sentences, finalMessage, onComplete }: Typew
   useEffect(() => {
     // If we've gone through all sentences, show the final message
     if (currentSentenceIndex >= sentences.length) {
-      setShowFinal(true);
-      // Add final message with proper spacing
-      const finalText = completedText + (completedText ? "\n\n" : "") + finalMessage;
-      setCompletedText(finalText);
-      setCurrentTypingText("");
-      if (onComplete) {
-        onComplete();
-      }
+      // Wait 2 seconds before showing the final message
+      setTimeout(() => {
+        setShowFinal(true);
+        // Add final message with proper spacing
+        const finalText = completedText + (completedText ? "\n\n" : "") + finalMessage;
+        setCompletedText(finalText);
+        setCurrentTypingText("");
+        if (onComplete) {
+          onComplete();
+        }
+      }, 2000);
       return;
     }
 
@@ -47,7 +50,7 @@ export function TypewriterMessage({ sentences, finalMessage, onComplete }: Typew
           setIsTyping(false);
           setIsPausing(true);
 
-          // Wait 1 second before moving to next sentence
+          // Wait 0.6 seconds before moving to next sentence
           setTimeout(() => {
             // Move current sentence to completed text
             setCompletedText(prev => prev + (prev ? "\n\n" : "") + currentSentence);
@@ -55,9 +58,9 @@ export function TypewriterMessage({ sentences, finalMessage, onComplete }: Typew
             setCurrentSentenceIndex(prev => prev + 1);
             setIsTyping(true);
             setIsPausing(false);
-          }, 1000);
+          }, 600);
         }
-      }, 30); // Speed of typing (30ms per character)
+      }, 20); // Speed of typing (20ms per character)
 
       return () => clearInterval(typingInterval);
     }

@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         // Backend admins can access all data via Supabase dashboard/MCP
       },
       stopWhen: stepCountIs(15),
-      temperature: 0.7, // More focused responses
+      temperature: 0.3, // Faster, more focused responses
     });
 
     return result.toUIMessageStreamResponse();
