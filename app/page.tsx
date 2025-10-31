@@ -13,7 +13,7 @@ export default function Home() {
 
   const typewriterSentences = [
     "Hi there! I'm your AI Travel Concierge — here to plan your perfect trip.",
-    "I'll collect your preferences and show you personalized options, then one of our friendly human concierges will reach out to finalize everything.",
+    "I'll collect your preferences, then one of our friendly human concierges will reach out to finalize everything.",
     "Think of it as teamwork: I do the thinking, they do the booking."
   ];
 
