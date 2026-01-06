@@ -42,17 +42,17 @@ export async function POST(request: NextRequest) {
     //   enhancedPrompt += `\n\n${memoryContext}\n\nUse this context to provide personalized responses and remember information from previous interactions.`;
     // }
 
-    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o, temperature: 0.8`);
+    console.log(`[Questionnaire API] Starting streamText with model: gpt-4o-mini, temperature: 0.7`);
     console.log(`[Questionnaire API] Tools available:`, Object.keys({ submitQuestionnaire }));
 
     const result = streamText({
-      model: openai("gpt-4o"),
+      model: openai("gpt-4o-mini"),
       system: enhancedPrompt,
       messages: modelMessages,
       tools: {
         submitQuestionnaire,
       },
-      temperature: 0.8, // Higher temperature for better conversational flow
+      temperature: 0.7, // Balanced temperature for conversational flow
     });
 
     console.log(`[Questionnaire API] StreamText initialized, returning response`);

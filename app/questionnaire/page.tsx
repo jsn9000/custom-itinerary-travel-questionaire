@@ -15,6 +15,8 @@ export default function QuestionnairePage() {
     // Traveler Information
     name: "",
     email: "",
+    phoneNumber: "",
+    referralSource: "",
     numberOfTravelers: "",
     children: "",
     specialOccasion: "",
@@ -112,7 +114,7 @@ export default function QuestionnairePage() {
   const canProceed = () => {
     switch (currentStep) {
       case 1: // Traveler Information
-        return formData.name && formData.email && formData.numberOfTravelers;
+        return formData.name && formData.email && formData.phoneNumber && formData.referralSource && formData.numberOfTravelers;
       case 2: // Destination - no required fields
         return true;
       case 3: // Lodging & Car Rental
@@ -227,7 +229,35 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    3. How many people are traveling? <span className="text-red-500">*</span>
+                    3. What is your phone number? <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="tel"
+                    value={formData.phoneNumber}
+                    onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                    required
+                    placeholder="e.g., (555) 123-4567"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-neutral-700">
+                    4. How did you hear about us? <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.referralSource}
+                    onChange={(e) => handleChange("referralSource", e.target.value)}
+                    required
+                    placeholder="e.g., Google, Friend referral, Social media"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-neutral-700">
+                    5. How many people are traveling? <span className="text-red-500">*</span>
                   </label>
                   <Input
                     type="number"
@@ -241,7 +271,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    4. Any children? If so, include ages.
+                    6. Any children? If so, include ages.
                   </label>
                   <Input
                     type="text"
@@ -254,7 +284,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    5. Is this a special occasion?
+                    7. Is this a special occasion?
                   </label>
                   <Input
                     type="text"
@@ -275,7 +305,7 @@ export default function QuestionnairePage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    6. Do you have a destination in mind?
+                    8. Do you have a destination in mind?
                   </label>
                   <Input
                     type="text"
@@ -288,7 +318,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    7. If no place in mind, do you have a continent in mind?
+                    9. If no place in mind, do you have a continent in mind?
                   </label>
                   <Select
                     value={formData.continent}
@@ -319,7 +349,7 @@ export default function QuestionnairePage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    8. Do you need accommodation? <span className="text-red-500">*</span>
+                    10. Do you need accommodation? <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.needAccommodation}
@@ -338,7 +368,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    9. Hotel nightly price range?
+                    11. Hotel nightly price range?
                   </label>
                   <Input
                     type="text"
@@ -351,7 +381,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    10. Will you need a car rental for your trip? <span className="text-red-500">*</span>
+                    12. Will you need a car rental for your trip? <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.needCarRental}
@@ -378,7 +408,7 @@ export default function QuestionnairePage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    11. Do you need help finding flight tickets? <span className="text-red-500">*</span>
+                    13. Do you need help finding flight tickets? <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.needFlightHelp}
@@ -397,7 +427,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    12. What is the departure airport?
+                    14. What is the departure airport?
                   </label>
                   <Input
                     type="text"
@@ -410,7 +440,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    13. Are you willing to fly out of another nearby airport for a cheaper price?
+                    15. Are you willing to fly out of another nearby airport for a cheaper price?
                   </label>
                   <Select
                     value={formData.willingOtherAirport}
@@ -428,7 +458,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    14. What date do you want your flight to begin?
+                    16. What date do you want your flight to begin?
                   </label>
                   <Input
                     type="date"
@@ -440,7 +470,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    15. Are you okay if the flight leaves a day before or later if the price is cheaper?
+                    17. Are you okay if the flight leaves a day before or later if the price is cheaper?
                   </label>
                   <Select
                     value={formData.flexibleFlightDate}
@@ -458,7 +488,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    16. Do you want a nonstop flight, or are you okay with a layover if it makes the flight cheaper?
+                    18. Do you want a nonstop flight, or are you okay with a layover if it makes the flight cheaper?
                   </label>
                   <Select
                     value={formData.flightPreference}
@@ -484,7 +514,7 @@ export default function QuestionnairePage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    17. Do you need help finding activities? <span className="text-red-500">*</span>
+                    19. Do you need help finding activities? <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.needActivitiesHelp}
@@ -503,7 +533,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    18. Do you need help finding food spots? <span className="text-red-500">*</span>
+                    20. Do you need help finding food spots? <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.needFoodHelp}
@@ -530,7 +560,7 @@ export default function QuestionnairePage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    19. What is your total budget for your trip (not including flights)?
+                    21. What is your total budget for your trip (not including flights)?
                   </label>
                   <Input
                     type="text"
@@ -547,7 +577,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    20. How many days do you want to be on land? <span className="text-red-500">*</span>
+                    22. How many days do you want to be on land? <span className="text-red-500">*</span>
                   </label>
                   <Input
                     type="number"
@@ -561,7 +591,7 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 text-neutral-700">
-                    21. Do you have a specific date in mind or a specific month? Or are you flexible?
+                    23. Do you have a specific date in mind or a specific month? Or are you flexible?
                   </label>
                   <Textarea
                     value={formData.travelDateFlexibility}

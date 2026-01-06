@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
 
     // Validate required fields
-    if (!data.name || !data.email || !data.numberOfTravelers) {
+    if (!data.name || !data.email || !data.phoneNumber || !data.referralSource || !data.numberOfTravelers) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }

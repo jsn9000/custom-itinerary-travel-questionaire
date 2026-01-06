@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  const TOTAL_QUESTIONS = 20;
+  const TOTAL_QUESTIONS = 22;
 
   const typewriterSentences = [
     "Hi there! I'm your AI Travel Concierge — here to plan your perfect trip.",

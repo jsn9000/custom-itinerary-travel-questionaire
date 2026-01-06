@@ -7,6 +7,8 @@ export const submitQuestionnaire = tool({
     // Traveler Information (required)
     name: z.string().describe('Client full name'),
     email: z.string().email().describe('Client email address'),
+    phoneNumber: z.string().describe('Client phone number'),
+    referralSource: z.string().describe('How they heard about us'),
     numberOfTravelers: z.string().describe('Number of people traveling'),
 
     // Optional traveler details
